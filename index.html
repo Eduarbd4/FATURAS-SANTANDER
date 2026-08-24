@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Finance Control | Controle de Faturas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -16,13 +16,71 @@
 .nav{display:grid;gap:4px}.nav button{border:0;background:transparent;color:#9dadca;text-align:left;min-height:43px;padding:11px 13px;border-radius:9px;font-size:11px;font-weight:650;cursor:pointer}.nav button:hover,.nav button.active{color:white;background:linear-gradient(90deg,rgba(53,104,212,.28),rgba(53,104,212,.08))}.nav button.active{box-shadow:inset 3px 0 #47b5df}.nav .ico{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;border-radius:6px;background:rgba(255,255,255,.05)}
 .sideFoot{margin-top:auto;border-top:1px solid #ffffff16;padding:18px 8px 0;color:#9dadca;font-size:9px;line-height:1.7}.main{min-width:0}.topbar{height:76px;padding:0 30px;border-bottom:1px solid #e4e9f1;background:rgba(255,255,255,.91);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:8}.topbar h1{font-size:19px;margin:0}.topbar p{font-size:9px;color:var(--muted);margin:3px 0 0}.rightbar{display:flex;gap:8px;align-items:center}.control{min-height:38px;border:1px solid #dbe2ec;border-radius:9px;background:#fff;color:var(--ink);padding:9px 11px;font-size:10px;cursor:pointer}.primary{background:linear-gradient(135deg,#2c69d7,#2158bd);border-color:#2158bd;color:#fff}
 .content{padding:28px 30px 55px;max-width:1700px;margin:auto}.uploadStrip{background:#fff;border:1px dashed #b9c6da;border-radius:12px;padding:13px 15px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.uploadStrip b{font-size:10px}.uploadStrip small{display:block;color:var(--muted);font-size:8px;margin-top:3px}
-.hero{background:radial-gradient(circle at 88% 0,rgba(48,152,209,.3),transparent 33%),linear-gradient(135deg,#0d1c37,#172d52);color:#fff;border-radius:15px;padding:26px 28px;margin-bottom:16px;box-shadow:0 18px 45px rgba(14,31,60,.18)}.hero span{font-size:8px;color:#8bd3ee;font-weight:800;letter-spacing:.13em}.hero h2{font-size:23px;margin:6px 0}.hero p{margin:0;color:#c1cce0;font-size:10px;line-height:1.7;max-width:1050px}
+.hero{background:radial-gradient(circle at 88% 0,rgba(48,152,209,.3),transparent 33%),linear-gradient(135deg,#0d1c37,#172d52);color:#fff;border-radius:15px;padding:26px 28px;margin-bottom:16px;box-shadow:0 18px 45px rgba(14,31,60,.18)}.hero span{font-size:8px;color:#8bd3ee;font-weight:800;letter-spacing:.13em}.hero h2{font-size:23px;margin:6px 0}.hero p{margin:0;color:#c1cce0;font-size:11px;line-height:1.7;max-width:1050px}
 .filters{display:grid;grid-template-columns:2fr repeat(5,1fr) auto;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:12px;margin-bottom:18px}.filters.compact{grid-template-columns:repeat(4,1fr) auto}.filters.audit{grid-template-columns:2fr 1fr auto}.filters input,.filters select{width:100%;min-width:0;border:1px solid #dbe2ec;border-radius:8px;padding:9px 10px;font-size:9px;color:var(--ink);background:#fff}.clear{border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--muted);cursor:pointer}
 .multi{position:relative}.multi>button{width:100%;height:100%;min-height:36px;border:1px solid #dbe2ec;background:#fff;border-radius:8px;padding:9px 10px;text-align:left;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.multi>button:after{content:"⌄";float:right;color:var(--muted)}.multiBox{display:none;position:absolute;top:calc(100% + 5px);left:0;min-width:230px;max-width:340px;max-height:280px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:9px;box-shadow:0 16px 40px #1628442b;padding:7px;z-index:20}.multi.open .multiBox{display:block}.multiBox label{display:flex;gap:8px;align-items:flex-start;padding:7px;border-radius:6px;cursor:pointer;font-size:9px}.multiBox label:hover{background:#f3f7fd}.multiBox input{width:auto;margin:1px 0}
 .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}.kpi{min-height:118px;background:#fff;border:1px solid #e3e8f0;border-radius:13px;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}.kpi:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--blue)}.kpi.green:before{background:var(--green)}.kpi.red:before{background:var(--red)}.kpi.amber:before{background:var(--amber)}.kpi.cyan:before{background:var(--cyan)}.kpi.purple:before{background:var(--purple)}.kpi label{color:var(--muted);font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.1em}.kpi strong{display:block;font-size:21px;margin:14px 0 8px;letter-spacing:-.04em}.kpi small{color:var(--muted);font-size:8.5px}
-.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:14px}.grid2.equal{grid-template-columns:1fr 1fr}.card{background:#fff;border:1px solid #e2e8f0;border-radius:13px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;min-width:0}.cardHead{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.cardHead h3{font-size:12px;margin:0}.cardHead small{font-size:8px;color:var(--muted)}.chartBox{height:310px;padding:18px}
-.tableWrap{overflow:auto;max-height:640px}table{width:100%;border-collapse:collapse;min-width:900px;font-size:9px}th{position:sticky;top:0;background:#f6f8fb;color:var(--muted);font-size:7.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;z-index:2}th,td{padding:11px 12px;border-bottom:1px solid var(--line)}tbody tr:nth-child(even) td{background:#fbfcfe}tr:hover td{background:#f1f6fd!important}.num{text-align:right;font-variant-numeric:tabular-nums}.tag{display:inline-block;padding:4px 8px;border-radius:20px;background:#edf2ff;color:var(--blue);font-size:7.5px;font-weight:800}.tag.green{background:#eaf8f3;color:var(--green)}.tag.amber{background:#fff7e7;color:#a16b11}.tag.gray{background:#edf0f4;color:#657085}
-.sectionIntro{margin:3px 2px 15px}.sectionIntro h2{font-size:21px;margin:0}.sectionIntro p{font-size:9px;color:var(--muted);margin:4px 0 0}.analysis{padding:18px 19px}.analysis h4{margin:0 0 10px;font-size:11px}.analysis p,.analysis li{font-size:9.5px;color:#56647b;line-height:1.75}.analysis ul{padding-left:18px;margin-bottom:0}.insight{border-left:3px solid var(--blue);padding:10px 12px;background:#f6f9fe;border-radius:0 8px 8px 0;margin:9px 0}.insight.warn{border-color:var(--amber);background:#fffbf2}.insight.risk{border-color:var(--red);background:#fff7f7}.empty{padding:45px;text-align:center;color:var(--muted)}.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:7px}.footer{text-align:center;color:var(--muted);font-size:8px;padding:14px}
+.grid2{display:grid;grid-template-columns:1.45fr 1fr;gap:14px}.grid2.equal{grid-template-columns:1fr 1fr}.card{background:#fff;border:1px solid #e2e8f0;border-radius:13px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;min-width:0}.cardHead{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.cardHead h3{font-size:12.5px;font-family:Inter,Arial,sans-serif;margin:0}.cardHead small{font-size:9px;color:var(--muted)}.chartBox{height:310px;padding:18px}
+.tableWrap{overflow:auto;max-height:640px}table{width:100%;border-collapse:collapse;min-width:900px;font-size:10px}th{position:sticky;top:0;background:#f6f8fb;color:var(--muted);font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;z-index:2}th,td{padding:11px 12px;border-bottom:1px solid var(--line)}tbody tr:nth-child(even) td{background:#fbfcfe}tr:hover td{background:#f1f6fd!important}.num{text-align:right;font-variant-numeric:tabular-nums}.tag{display:inline-block;padding:4px 8px;border-radius:20px;background:#edf2ff;color:var(--blue);font-size:7.5px;font-weight:800}.tag.green{background:#eaf8f3;color:var(--green)}.tag.amber{background:#fff7e7;color:#a16b11}.tag.gray{background:#edf0f4;color:#657085}
+.sectionIntro{margin:3px 2px 15px}.sectionIntro h2{font-size:21px;margin:0}.sectionIntro p{font-size:10.5px;color:var(--muted);margin:4px 0 0}
+.analysis{
+  padding:22px 24px 24px;
+  font-family:Inter,Arial,sans-serif;
+  color:#3d4a60;
+}
+.analysis h4{
+  margin:22px 0 7px;
+  font-family:Inter,Arial,sans-serif;
+  font-size:10px;
+  font-weight:700;
+  color:#66748b;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+}
+.analysis h4:first-child{margin-top:0}
+.analysis p,.analysis li{
+  font-family:Inter,Arial,sans-serif;
+  font-size:11.5px;
+  font-weight:400;
+  color:#46546b;
+  line-height:1.72;
+  letter-spacing:0;
+}
+.analysis ul{
+  padding-left:18px;
+  margin:8px 0 0;
+}
+.insight{
+  border:0;
+  border-bottom:1px solid #edf1f6;
+  padding:2px 0 14px;
+  background:transparent;
+  border-radius:0;
+  margin:0 0 10px;
+  font-family:Inter,Arial,sans-serif;
+  font-size:11.5px;
+  font-weight:400;
+  line-height:1.72;
+  color:#3f4e65;
+}
+.insight:last-child{border-bottom:0;margin-bottom:0}
+.insight b{
+  font-weight:600;
+  color:#16243b;
+}
+.insight.warn{
+  border:0;
+  border-bottom:1px solid #edf1f6;
+  background:transparent;
+  color:#6b552b;
+}
+.insight.risk{
+  border:0;
+  border-bottom:1px solid #edf1f6;
+  background:transparent;
+  color:#74464b;
+}
+.empty{padding:45px;text-align:center;color:var(--muted)}.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:7px}.footer{text-align:center;color:var(--muted);font-size:8px;padding:14px}
 @media(max-width:1100px){.shell{grid-template-columns:78px 1fr}.brand div:last-child,.nav .text,.sideFoot{display:none}.nav button{text-align:center}.kpis{grid-template-columns:repeat(3,1fr)}.filters,.filters.compact,.filters.audit{grid-template-columns:repeat(3,1fr)}.grid2,.grid2.equal{grid-template-columns:1fr}}
 @media(max-width:720px){.shell{display:block}.side{display:none}.topbar{height:auto;min-height:72px;padding:11px 14px}.content{padding:17px 13px 42px}.rightbar{flex-wrap:wrap}.filters,.filters.compact,.filters.audit,.kpis{grid-template-columns:1fr 1fr}.uploadStrip{display:block}.uploadStrip button{width:100%;margin-top:10px}}
 @media(max-width:440px){.filters,.filters.compact,.filters.audit,.kpis{grid-template-columns:1fr}}
@@ -69,7 +127,8 @@
       <div><h2 id="detailTitle" style="margin:0;font-size:15px">Detalhamento</h2><p id="detailSub" style="margin:4px 0 0"></p></div>
       <button class="control" id="closeDetail">Fechar</button>
     </div>
-    <div id="detailBody" style="overflow:auto;max-height:75vh"></div>
+    <div id="detailFilters" style="padding:14px 16px 0"></div>
+    <div id="detailBody" style="overflow:auto;max-height:68vh"></div>
   </div>
 </div>
 
@@ -149,49 +208,89 @@ function categoryRows(rows){
 function supplierRows(rows){
  return [...group(rows,r=>r.supplier)].map(([name,list])=>({name,total:sum(list,x=>x.installmentValue),count:list.length,categories:uniq(list.map(x=>x.category)).length})).sort((a,b)=>b.total-a.total)
 }
+
 function autoAnalysis(rows,mode){
- const total=sum(rows,x=>x.installmentValue),cats=categoryRows(rows),sups=supplierRows(rows),topCat=cats[0],topSup=sups[0];
- const parcelled=rows.filter(x=>x.installments>1),parcelTotal=sum(parcelled,x=>x.installmentValue);
- let notes=[];
- if(topCat)notes.push(`A categoria <b>${esc(topCat.name)}</b> é a maior concentração do recorte, com <b>${money(topCat.total)}</b> (${pct(total?topCat.total/total*100:0)} do total).`);
- if(topSup)notes.push(`O fornecedor com maior impacto é <b>${esc(topSup.name)}</b>, somando <b>${money(topSup.total)}</b>.`);
- if(parcelTotal)notes.push(`Compras com mais de uma parcela representam <b>${pct(total?parcelTotal/total*100:0)}</b> do valor que aparece nas faturas selecionadas.`);
- const review=[];
- if(topCat&&total&&topCat.total/total>.30)review.push(`Revisar a categoria ${esc(topCat.name)}, pois ela concentra mais de 30% do gasto do recorte.`);
- if(topSup&&total&&topSup.total/total>.20)review.push(`Revisar recorrência e necessidade dos gastos com ${esc(topSup.name)}.`);
- if(parcelTotal&&total&&parcelTotal/total>.35)review.push('Revisar novas compras parceladas, porque elas aumentam o comprometimento das próximas faturas.');
- if(!review.length)review.push('Não há uma concentração extrema no recorte; priorize a revisão das maiores categorias e fornecedores do ranking.');
- return card('Análise do recorte',`<div class="analysis"><h4>O que mais explica os gastos</h4>${notes.map(x=>`<div class="insight">${x}</div>`).join('')}<h4>O que vale revisar</h4><ul>${review.map(x=>`<li>${x}</li>`).join('')}</ul></div>`,mode||'Análise automática baseada nos dados');
+ const total=sum(rows,x=>x.installmentValue), cats=categoryRows(rows), sups=supplierRows(rows);
+ const topCat=cats[0], topSup=sups[0], years=uniq(rows.map(x=>x.year));
+ const y25=sum(rows.filter(x=>x.year===2025),x=>x.installmentValue);
+ const y26=sum(rows.filter(x=>x.year===2026),x=>x.installmentValue);
+ const diff=y26-y25, variation=y25?(diff/y25*100):null;
+ const parcelled=rows.filter(x=>String(x.installment).toLowerCase()==='sim'||x.installments>1);
+ const parcelTotal=sum(parcelled,x=>x.installmentValue);
+ const topCatShare=topCat&&total?topCat.total/total*100:0;
+ const topSupShare=topSup&&total?topSup.total/total*100:0;
+
+ let attention='Não foi identificada uma concentração crítica no recorte atual.';
+ let recommendation='Manter o acompanhamento das maiores categorias e fornecedores e comparar a evolução nos próximos períodos.';
+ let attentionClass='';
+
+ if(topSupShare>=35){
+   attention=`O fornecedor <b>${esc(topSup.name)}</b> concentra ${pct(topSupShare)} do gasto analisado. Essa concentração merece validação para entender recorrência, preços e necessidade das despesas.`;
+   recommendation=`Revisar os lançamentos de <b>${esc(topSup.name)}</b>, verificar frequência das compras e avaliar possibilidade de renegociação ou redução de recorrência.`;
+   attentionClass='risk';
+ }else if(topCatShare>=30){
+   attention=`A categoria <b>${esc(topCat.name)}</b> representa ${pct(topCatShare)} do gasto total e é o principal ponto de concentração do período.`;
+   recommendation=`Abrir os maiores fornecedores de <b>${esc(topCat.name)}</b> e verificar quais despesas explicam essa concentração, separando gastos recorrentes de gastos extraordinários.`;
+   attentionClass='warn';
+ }else if(total && parcelTotal/total>=.35){
+   attention=`${pct(parcelTotal/total*100)} dos gastos do recorte estão relacionados a compras parceladas, aumentando o comprometimento das faturas seguintes.`;
+   recommendation='Revisar novas compras parceladas e acompanhar o saldo de parcelas futuras antes de assumir novos compromissos.';
+   attentionClass='warn';
+ }
+
+ let variationText='Não há base suficiente para comparar 2025 e 2026 neste recorte.';
+ if(y25||y26){
+   if(y25 && y26) variationText=`2025 totalizou <b>${money(y25)}</b> e 2026 <b>${money(y26)}</b>. A variação é de <b>${money(Math.abs(diff))}</b> ${diff>=0?'a mais':'a menos'} (${pct(Math.abs(variation))}).`;
+   else variationText=`O recorte possui ${y25?'dados em 2025':'dados em 2026'}, mas não há valor nos dois anos para uma comparação direta.`;
+ }
+
+ return card('Análise financeira do período',`<div class="analysis">
+   <h4>Resumo do período</h4>
+   <div class="insight">Os gastos selecionados totalizam <b>${money(total)}</b>, distribuídos em <b>${rows.length} lançamentos</b>, <b>${sups.length} fornecedores</b> e <b>${cats.length} categorias</b>.</div>
+
+   <h4>Principal impacto</h4>
+   <div class="insight">${topCat?`A categoria <b>${esc(topCat.name)}</b> lidera os gastos com <b>${money(topCat.total)}</b> (${pct(topCatShare)} do total).`: 'Não há dados suficientes no recorte.'}
+   ${topSup?` O fornecedor de maior impacto é <b>${esc(topSup.name)}</b>, com <b>${money(topSup.total)}</b> (${pct(topSupShare)} do total).`:''}</div>
+
+   <h4>Variação</h4>
+   <div class="insight">${variationText}</div>
+
+   <h4>Ponto de atenção</h4>
+   <div class="insight ${attentionClass}">${attention}</div>
+
+   <h4>Recomendação</h4>
+   <div class="insight">${recommendation}</div>
+ </div>`,mode||'Leitura gerencial baseada no filtro selecionado');
 }
 
-function detailTable(rows){
- const total=sum(rows,x=>x.installmentValue),suppliers=uniq(rows.map(x=>x.supplier)).length;
- return `<div class="kpis" style="padding:16px 16px 0">${kpi('Total',money(total),rows.length+' lançamentos')}${kpi('Fornecedores',suppliers,'No detalhamento','cyan')}${kpi('Ticket médio',money(rows.length?total/rows.length:0),'Por lançamento','green')}</div>`+
- `<div class="tableWrap" style="max-height:none"><table><thead><tr><th>Data</th><th>Ano</th><th>Mês</th><th>Fornecedor</th><th>Categoria</th><th>Cartão</th><th>Parcelado</th><th class="num">Qtd. parcelas</th><th class="num">Valor</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.date)}</td><td>${r.year||''}</td><td>${r.month?monthLong(r.month):''}</td><td>${esc(r.supplier)}</td><td>${esc(r.category)}</td><td>${esc(r.card)}</td><td>${esc(r.installment)}</td><td class="num">${r.installments||0}</td><td class="num"><b>${money(r.installmentValue)}</b></td></tr>`).join('')}<tr><td colspan="8"><b>TOTAL</b></td><td class="num"><b>${money(total)}</b></td></tr></tbody></table></div>`;
-}
-function openDetail(title,rows,subtitle=''){
- $('#detailTitle').textContent=title;
- $('#detailSub').textContent=subtitle||`${rows.length} lançamentos`;
- $('#detailBody').innerHTML=detailTable(rows);
- $('#detailModal').classList.add('open');
-}
 function analysisCategoryBox(rows){
  const s=state(), cats=uniq(rows.map(x=>x.category)), selected=s.analysisCategory?.[0]||'';
  const opts=`<option value="">Selecione uma categoria para análise</option>`+cats.map(c=>`<option ${c===selected?'selected':''} value="${esc(c)}">${esc(c)}</option>`).join('');
- let body='<p>Escolha uma categoria para gerar um mini relatório específico.</p>';
+ let body=`<div class="insight">Selecione uma categoria acima para gerar uma leitura financeira específica, considerando fornecedores, evolução anual, concentração dos gastos e pontos que merecem revisão.</div>`;
  if(selected){
-   const cr=rows.filter(r=>r.category===selected), total=sum(cr,x=>x.installmentValue), sups=supplierRows(cr), years=uniq(cr.map(x=>x.year));
-   const y25=sum(cr.filter(x=>x.year===2025),x=>x.installmentValue), y26=sum(cr.filter(x=>x.year===2026),x=>x.installmentValue), diff=y26-y25;
-   const notes=[];
-   if(sups[0])notes.push(`O maior fornecedor da categoria é <b>${esc(sups[0].name)}</b>, com ${money(sups[0].total)}.`);
-   if(y25||y26)notes.push(`2025: <b>${money(y25)}</b> · 2026: <b>${money(y26)}</b> · diferença: <b>${money(diff)}</b>.`);
-   if(total && sups[0] && sups[0].total/total>.35) notes.push('Há concentração relevante em um único fornecedor, então vale revisar recorrência, contrato e necessidade do gasto.');
-   else notes.push('A categoria não está excessivamente concentrada em um único fornecedor no recorte atual.');
-   if(diff>0)notes.push(`O gasto aumentou em 2026. Vale revisar quais fornecedores e meses explicam esse crescimento.`);
-   else if(diff<0)notes.push(`O gasto caiu em 2026 em relação a 2025.`);
-   body=notes.map(x=>`<div class="insight ${diff>0?'warn':''}">${x}</div>`).join('');
+   const cr=rows.filter(r=>r.category===selected), total=sum(cr,x=>x.installmentValue), sups=supplierRows(cr);
+   const y25=sum(cr.filter(x=>x.year===2025),x=>x.installmentValue), y26=sum(cr.filter(x=>x.year===2026),x=>x.installmentValue);
+   const diff=y26-y25, variation=y25?diff/y25*100:null, top=sups[0], share=top&&total?top.total/total*100:0;
+   let point='A distribuição entre fornecedores não apresenta concentração crítica no recorte atual.';
+   let rec='Continuar acompanhando a evolução mensal da categoria e revisar os maiores lançamentos periodicamente.';
+   let cls='';
+   if(share>=35){
+     point=`<b>${esc(top.name)}</b> concentra ${pct(share)} dos gastos da categoria. Isso indica dependência relevante de um único fornecedor.`;
+     rec=`Revisar os lançamentos de ${esc(top.name)}, a recorrência das compras, preços praticados e possibilidade de renegociação.`;
+     cls='risk';
+   }else if(diff>0 && y25){
+     point=`O gasto da categoria cresceu ${pct(variation)} em 2026 em relação a 2025, um aumento de ${money(diff)}.`;
+     rec='Identificar quais meses e fornecedores explicam o crescimento e separar aumento operacional de despesas extraordinárias.';
+     cls='warn';
+   }
+   body=`
+   <h4>Resumo da categoria</h4><div class="insight"><b>${esc(selected)}</b> soma <b>${money(total)}</b> em ${cr.length} lançamentos, distribuídos entre ${sups.length} fornecedores.</div>
+   <h4>Fornecedor de maior impacto</h4><div class="insight">${top?`<b>${esc(top.name)}</b> representa <b>${money(top.total)}</b> (${pct(share)} da categoria).`:'Sem fornecedor identificado.'}</div>
+   <h4>Comparação anual</h4><div class="insight">2025: <b>${money(y25)}</b> · 2026: <b>${money(y26)}</b>${y25?` · variação: <b>${diff>=0?'+':''}${pct(variation)}</b>`:''}.</div>
+   <h4>Ponto de atenção</h4><div class="insight ${cls}">${point}</div>
+   <h4>Recomendação</h4><div class="insight">${rec}</div>`;
  }
- return card('Mini relatório por categoria',`<div class="analysis"><select id="analysisCategorySelect" class="control" style="width:100%;margin-bottom:12px">${opts}</select>${body}</div>`,'Análise específica da categoria escolhida');
+ return card('Análise específica por categoria',`<div class="analysis"><select id="analysisCategorySelect" class="control" style="width:100%;margin-bottom:14px">${opts}</select>${body}</div>`,'Mini relatório gerencial');
 }
 function renderBoard(){
  const rows=selected(),total=sum(rows,x=>x.installmentValue),purchase=sum(rows,x=>x.totalValue),avg=rows.length?total/rows.length:0,cats=categoryRows(rows),sups=supplierRows(rows);
@@ -263,7 +362,7 @@ function bindFilters(){
  $$('.categoryDetail').forEach(tr=>tr.onclick=()=>{const rows=selected().filter(r=>r.category===tr.dataset.category);openDetail(`Categoria: ${tr.dataset.category}`,rows,'Todos os lançamentos, fornecedores e valores da categoria')});
  $$('.annualCategoryDetail').forEach(tr=>tr.onclick=()=>{const rows=selected().filter(r=>r.category===tr.dataset.category&&(r.year===2025||r.year===2026));openDetail(`${tr.dataset.category} · 2025 x 2026`,rows,'Detalhamento completo dos dois anos')});
 }
-document.addEventListener('click',e=>{if(!e.target.closest('.multi'))$$('.multi').forEach(x=>x.classList.remove('open'))});
+document.addEventListener('click',e=>{if(!e.target.closest('.multi'))$$('.multi').forEach(x=>x.classList.remove('open'));if(!e.target.closest('[data-detail-multi]'))$$('[data-detail-multi]').forEach(x=>x.classList.remove('open'))});
 function adminUI(){
  const on=!!session;
  $('#adminStatus').textContent=on?'Administrador conectado':'Visualização pública';
