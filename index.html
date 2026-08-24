@@ -91,6 +91,79 @@
 .dialogActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
 .lockedNote{background:#fff;border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:9px;color:var(--muted)}
 
+
+.filterPanel{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:14px 15px 15px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow);
+}
+.filterPanelHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:11px;
+}
+.filterPanelHead b{
+  font-family:Inter,Arial,sans-serif;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#627087;
+}
+.filterPanelHead span{
+  font-family:Inter,Arial,sans-serif;
+  font-size:9px;
+  color:#8a95a7;
+}
+.filterPanel .filters{
+  padding:0;
+  margin:0;
+  border:0;
+  box-shadow:none;
+  background:transparent;
+  grid-template-columns:repeat(4,minmax(145px,1fr));
+  gap:9px;
+}
+.filterPanel .filters input,
+.filterPanel .multi>button{
+  height:39px;
+  border:1px solid #dce3ed;
+  border-radius:9px;
+  background:#fbfcfe;
+  font-family:Inter,Arial,sans-serif;
+  font-size:9.5px;
+  color:#334158;
+}
+.filterPanel .multi>button:hover,
+.filterPanel .filters input:hover{
+  border-color:#b9c7da;
+  background:#fff;
+}
+.filterPanel .clear{
+  height:39px;
+  border-radius:9px;
+  font-family:Inter,Arial,sans-serif;
+  font-size:9.5px;
+  font-weight:600;
+}
+.clickableRow{cursor:pointer}
+.clickableRow td{transition:background .14s ease}
+.clickableRow:hover td{background:#eef5ff!important}
+.clickableRow td:first-child{color:#235fbf;font-weight:700}
+.detailHint{font-size:8px;color:#8a95a7;font-weight:500;margin-left:5px}
+#detailFilters .filterPanel{margin-bottom:0;box-shadow:none;border-color:#e6ebf2}
+#detailFilters .filterPanel .filters{grid-template-columns:repeat(3,minmax(140px,1fr))}
+@media(max-width:950px){
+  .filterPanel .filters,#detailFilters .filterPanel .filters{grid-template-columns:repeat(2,minmax(130px,1fr))}
+}
+@media(max-width:560px){
+  .filterPanel .filters,#detailFilters .filterPanel .filters{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -194,19 +267,82 @@ function filters(keys,{search=false,cls=''}={}){
  const s=state();
  return `<div class="filters ${cls}">${search?`<input id="fq" placeholder="Buscar fornecedor, categoria ou cartão" value="${esc(s.q)}">`:''}${keys.map(k=>multi(k,{years:'Ano',months:'Mês',categories:'Categorias',cards:'Número do cartão',suppliers:'Fornecedores',installments:'Quantidade de parcelas',parcelStatus:'Parcelado / não parcelado'}[k],options[k](),s)).join('')}<button class="clear" id="clearFilters">Limpar</button></div>`;
 }
-function allFilters({search=false}={}){return filters(['years','months','categories','suppliers','cards','parcelStatus','installments'],{search,cls:''})}
+function allFilters({search=false}={}){return `<section class="filterPanel"><div class="filterPanelHead"><b>Filtros da análise</b><span>Selecione um ou vários itens</span></div>${filters(['years','months','categories','suppliers','cards','parcelStatus','installments'],{search,cls:''})}</section>`}
 function kpi(label,value,detail,tone=''){return `<article class="kpi ${tone}"><label>${label}</label><strong>${value}</strong><small>${detail}</small></article>`}
 function card(title,body,sub=''){return `<section class="card"><div class="cardHead"><h3>${title}</h3><small>${sub}</small></div>${body}</section>`}
 function group(rows,key){const m=new Map;rows.forEach(r=>{const k=key(r)||'Não informado';m.set(k,[...(m.get(k)||[]),r])});return m}
 function table(rows){
  if(!rows.length)return `<div class="empty"><b>Nenhum lançamento encontrado</b>Altere os filtros desta aba.</div>`;
- return `<div class="tableWrap"><table><thead><tr><th>Data</th><th>Competência</th><th>Fornecedor</th><th>Categoria</th><th>Cartão</th><th class="num">Qtd. parcelas</th><th class="num">Parcela</th><th class="num">Compra total</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.competenceLabel)}</td><td>${esc(r.supplier)}</td><td>${esc(r.category)}</td><td>${esc(r.card)}</td><td class="num">${r.installments||0}</td><td class="num"><b>${money(r.installmentValue)}</b></td><td class="num">${money(r.totalValue)}</td></tr>`).join('')}</tbody></table></div>`;
+ return `<div class="tableWrap"><table><thead><tr><th>Data</th><th>Competência</th><th>Fornecedor</th><th>Categoria</th><th>Cartão</th><th class="num">Qtd. parcelas</th><th class="num">Parcela</th><th class="num">Compra total</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="clickableRow js-detail-single" data-rowid="${esc(`${r.date}|${r.supplier}|${r.category}|${r.card}|${r.installmentValue}`)}"><td>${esc(r.date)}</td><td>${esc(r.competenceLabel)}</td><td>${esc(r.supplier)}</td><td>${esc(r.category)}</td><td>${esc(r.card)}</td><td class="num">${r.installments||0}</td><td class="num"><b>${money(r.installmentValue)}</b></td><td class="num">${money(r.totalValue)}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function categoryRows(rows){
  return [...group(rows,r=>r.category)].map(([name,list])=>({name,total:sum(list,x=>x.installmentValue),count:list.length,suppliers:uniq(list.map(x=>x.supplier)).length})).sort((a,b)=>b.total-a.total)
 }
 function supplierRows(rows){
  return [...group(rows,r=>r.supplier)].map(([name,list])=>({name,total:sum(list,x=>x.installmentValue),count:list.length,categories:uniq(list.map(x=>x.category)).length})).sort((a,b)=>b.total-a.total)
+}
+
+
+let DETAIL={allRows:[],title:'',subtitle:'',filters:{years:[],months:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]}};
+
+function detailSelected(){
+ const f=DETAIL.filters;
+ return DETAIL.allRows.filter(r=>{
+   if(f.years.length&&!f.years.includes(String(r.year)))return false;
+   if(f.months.length&&!f.months.includes(String(r.month)))return false;
+   if(f.categories.length&&!f.categories.includes(r.category))return false;
+   if(f.suppliers.length&&!f.suppliers.includes(r.supplier))return false;
+   if(f.cards.length&&!f.cards.includes(r.card))return false;
+   if(f.parcelStatus.length&&!f.parcelStatus.includes(String(r.installment).toLowerCase()))return false;
+   if(f.installments.length&&!f.installments.includes(String(r.installments)))return false;
+   return true;
+ });
+}
+function detailMulti(key,label,items){
+ const selected=DETAIL.filters[key]||[];
+ const title=selected.length?selected.length===1?(items.find(x=>String(x.v)===String(selected[0]))?.t||selected[0]):selected.length+' selecionados':label;
+ return `<div class="multi" data-detail-multi="${key}"><button type="button">${esc(title)}</button><div class="multiBox">${items.map(x=>`<label><input type="checkbox" value="${esc(x.v)}" ${selected.includes(String(x.v))?'checked':''}><span>${esc(x.t)}</span></label>`).join('')}</div></div>`;
+}
+function detailTable(rows){
+ const total=sum(rows,x=>x.installmentValue);
+ if(!rows.length)return `<div class="empty"><b>Nenhum lançamento encontrado</b>Altere ou limpe os filtros do detalhamento.</div>`;
+ return `<div class="kpis" style="padding:0 16px 4px">
+ ${kpi('Total filtrado',money(total),rows.length+' lançamentos')}
+ ${kpi('Fornecedores',uniq(rows.map(x=>x.supplier)).length,'No recorte','cyan')}
+ ${kpi('Categorias',uniq(rows.map(x=>x.category)).length,'No recorte','purple')}
+ ${kpi('Ticket médio',money(rows.length?total/rows.length:0),'Por lançamento','green')}
+ ${kpi('Cartões',uniq(rows.map(x=>x.card)).length,'No recorte','amber')}
+ </div>
+ <div class="tableWrap" style="max-height:none"><table><thead><tr><th>Data</th><th>Ano</th><th>Mês</th><th>Fornecedor</th><th>Categoria</th><th>Cartão</th><th>Parcelado</th><th class="num">Qtd. parcelas</th><th class="num">Valor</th></tr></thead><tbody>
+ ${rows.map(r=>`<tr><td>${esc(r.date)}</td><td>${r.year||''}</td><td>${r.month?monthLong(r.month):''}</td><td>${esc(r.supplier)}</td><td>${esc(r.category)}</td><td>${esc(r.card)}</td><td>${esc(r.installment)}</td><td class="num">${r.installments||0}</td><td class="num"><b>${money(r.installmentValue)}</b></td></tr>`).join('')}
+ <tr><td colspan="8"><b>TOTAL DO RECORTE</b></td><td class="num"><b>${money(total)}</b></td></tr>
+ </tbody></table></div>`;
+}
+function renderDetail(){
+ const rows=detailSelected(), source=DETAIL.allRows;
+ const mk=(key,label,vals,formatter=x=>x)=>detailMulti(key,label,uniq(vals).map(v=>({v:String(v),t:formatter(v)})));
+ $('#detailFilters').innerHTML=`<section class="filterPanel"><div class="filterPanelHead"><b>Filtros do detalhamento</b><span>Esses filtros não alteram a aba principal</span></div><div class="filters">
+ ${mk('years','Ano',source.map(x=>x.year))}
+ ${mk('months','Mês',source.map(x=>x.month),monthLong)}
+ ${mk('categories','Categoria',source.map(x=>x.category))}
+ ${mk('suppliers','Fornecedor',source.map(x=>x.supplier))}
+ ${mk('cards','Número do cartão',source.map(x=>x.card))}
+ ${mk('parcelStatus','Parcelado / não',source.map(x=>String(x.installment).toLowerCase()),x=>x==='sim'?'Parcelado':(x==='nao'||x==='não')?'Não parcelado':x)}
+ ${mk('installments','Qtd. parcelas',source.map(x=>x.installments),x=>x?`${x} parcela${Number(x)>1?'s':''}`:'Não informado')}
+ <button class="clear" id="detailClear">Limpar filtros</button>
+ </div></section>`;
+ $('#detailBody').innerHTML=detailTable(rows);
+ $('#detailSub').textContent=`${rows.length} lançamentos · ${money(sum(rows,x=>x.installmentValue))}`;
+ $$('[data-detail-multi]>button').forEach(b=>b.onclick=e=>{e.stopPropagation();const box=b.parentElement;$$('[data-detail-multi]').filter(x=>x!==box).forEach(x=>x.classList.remove('open'));box.classList.toggle('open')});
+ $$('[data-detail-multi] input').forEach(c=>c.onchange=()=>{const key=c.closest('[data-detail-multi]').dataset.detailMulti;DETAIL.filters[key]=$$(`[data-detail-multi="${key}"] input:checked`).map(x=>x.value);renderDetail()});
+ const clear=$('#detailClear');if(clear)clear.onclick=()=>{DETAIL.filters={years:[],months:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]};renderDetail()};
+}
+function openDetail(title,rows,subtitle=''){
+ DETAIL={allRows:[...rows],title,subtitle,filters:{years:[],months:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]}};
+ $('#detailTitle').textContent=title;
+ $('#detailSub').textContent=subtitle||`${rows.length} lançamentos`;
+ $('#detailModal').classList.add('open');
+ renderDetail();
 }
 
 function autoAnalysis(rows,mode){
@@ -297,7 +433,7 @@ function renderBoard(){
  return allFilters({search:true})+
  `<section class="hero"><span>VISÃO DIRETORIA</span><h2>Controle executivo das faturas</h2><p>Use os filtros desta aba sem afetar nenhuma outra análise. É possível selecionar várias categorias, fornecedores e quantidades de parcelas ao mesmo tempo.</p></section>
  <div class="kpis">${kpi('Valor nas faturas',money(total),rows.length+' lançamentos')}${kpi('Valor original das compras',money(purchase),'Compras do recorte','cyan')}${kpi('Ticket médio',money(avg),'Por lançamento','green')}${kpi('Categorias',uniq(rows.map(x=>x.category)).length,'Categorias no recorte','purple')}${kpi('Fornecedores',uniq(rows.map(x=>x.supplier)).length,'Fornecedores no recorte','amber')}</div>
- <div class="grid2">${card('Maiores categorias',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">Valor</th><th class="num">% total</th></tr></thead><tbody>${cats.slice(0,12).map(x=>`<tr><td>${esc(x.name)}</td><td class="num"><b>${money(x.total)}</b></td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}${autoAnalysis(rows,'Diretoria')}</div>
+ <div class="grid2">${card('Maiores categorias',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">Valor</th><th class="num">% total</th></tr></thead><tbody>${cats.slice(0,12).map(x=>`<tr class="clickableRow js-detail-category" data-category="${esc(x.name)}"><td>${esc(x.name)} <span class="detailHint">ver gastos</span></td><td class="num"><b>${money(x.total)}</b></td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}${autoAnalysis(rows,'Diretoria')}</div>
  ${card('Todos os lançamentos do recorte',table(rows))}`;
 }
 function renderAudit(){
@@ -305,7 +441,7 @@ function renderAudit(){
  return allFilters({search:false})+
  `<div class="sectionIntro"><h2>Auditoria por categoria</h2><p>Selecione uma ou mais categorias para ver todos os gastos e todos os fornecedores ligados a elas.</p></div>
  <div class="kpis">${kpi('Total gasto',money(total),rows.length+' lançamentos')}${kpi('Fornecedores',uniq(rows.map(x=>x.supplier)).length,'Fornecedores encontrados','cyan')}${kpi('Ticket médio',money(rows.length?total/rows.length:0),'Por lançamento','green')}${kpi('Maior fornecedor',sups[0]?money(sups[0].total):money(0),sups[0]?.name||'Sem dados','amber')}${kpi('Categorias selecionadas',state().categories.length||uniq(rows.map(x=>x.category)).length,'No recorte','purple')}</div>
- <div class="grid2 equal">${card('Fornecedores da categoria',`<div class="tableWrap"><table><thead><tr><th>Fornecedor</th><th class="num">Valor</th><th class="num">Compras</th><th class="num">% categoria</th></tr></thead><tbody>${sups.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}${autoAnalysis(rows,'Auditoria da categoria')}</div>
+ <div class="grid2 equal">${card('Fornecedores da categoria',`<div class="tableWrap"><table><thead><tr><th>Fornecedor</th><th class="num">Valor</th><th class="num">Compras</th><th class="num">% categoria</th></tr></thead><tbody>${sups.map(x=>`<tr class="clickableRow js-detail-supplier" data-supplier="${esc(x.name)}"><td><b>${esc(x.name)}</b> <span class="detailHint">ver gastos</span></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}${autoAnalysis(rows,'Auditoria da categoria')}</div>
  ${card('Todos os gastos da categoria',table(rows))}`;
 }
 function renderMonthly(){
@@ -314,8 +450,8 @@ function renderMonthly(){
  const total=sum(rows,x=>x.installmentValue);
  return allFilters({search:false})+
  `<div class="sectionIntro"><h2>Comparativo mensal</h2><p>Filtre mês, ano, categoria e cartão. Esta aba não altera a Diretoria nem o Comparativo Anual.</p></div>
- <div class="grid2">${card('Gasto por mês',`<div class="tableWrap"><table><thead><tr><th>Ano</th><th>Mês</th><th class="num">Total gasto</th><th class="num">Lançamentos</th><th class="num">% do recorte</th></tr></thead><tbody>${matrix.map(x=>`<tr class="click monthDetail" data-year="${x.year}" data-month="${x.month}"><td>${x.year}</td><td>${monthLong(x.month)}</td><td class="num"><b>${money(x.total)}</b></td><td class="num">${x.count}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}${autoAnalysis(rows,'Comparativo mensal')}</div>
- ${card('Categorias dentro dos meses selecionados',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">Total</th><th class="num">Lançamentos</th><th class="num">Fornecedores</th></tr></thead><tbody>${categoryRows(rows).map(x=>`<tr class="click categoryDetail" data-category="${esc(x.name)}"><td><b>${esc(x.name)}</b></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${x.suppliers}</td></tr>`).join('')}</tbody></table></div>`)}`+analysisCategoryBox(rows);
+ <div class="grid2">${card('Gasto por mês',`<div class="tableWrap"><table><thead><tr><th>Ano</th><th>Mês</th><th class="num">Total gasto</th><th class="num">Lançamentos</th><th class="num">% do recorte</th></tr></thead><tbody>${matrix.map(x=>`<tr class="clickableRow js-detail-month" data-year="${x.year}" data-month="${x.month}"><td>${x.year}</td><td>${monthLong(x.month)}</td><td class="num"><b>${money(x.total)}</b></td><td class="num">${x.count}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}${autoAnalysis(rows,'Comparativo mensal')}</div>
+ ${card('Categorias dentro dos meses selecionados',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">Total</th><th class="num">Lançamentos</th><th class="num">Fornecedores</th></tr></thead><tbody>${categoryRows(rows).map(x=>`<tr class="clickableRow js-detail-category" data-category="${esc(x.name)}"><td><b>${esc(x.name)}</b></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${x.suppliers}</td></tr>`).join('')}</tbody></table></div>`)}`+analysisCategoryBox(rows);
 }
 function renderAnnual(){
  const s=state(),base=selected(s),months=s.months;
@@ -326,7 +462,7 @@ function renderAnnual(){
  return allFilters({search:false})+
  `<div class="sectionIntro"><h2>Comparativo anual 2025 × 2026</h2><p>Compara todas as categorias dos dois anos. O filtro de mês permite comparar, por exemplo, janeiro/2025 com janeiro/2026.</p></div>
  <div class="kpis">${kpi('Total 2025',money(t25),y25.length+' lançamentos')}${kpi('Total 2026',money(t26),y26.length+' lançamentos','cyan')}${kpi('Diferença 2026 x 2025',money(delta),t25?pct(delta/t25*100):'Sem base 2025',delta>0?'red':'green')}${kpi('Categorias comparadas',rows.length,'No recorte','purple')}${kpi('Meses selecionados',months.length||12,months.length?months.map(monthShort).join(', '):'Ano completo','amber')}</div>
- <div class="grid2">${card('Categorias: 2025 x 2026',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">2025</th><th class="num">2026</th><th class="num">Diferença</th><th class="num">Variação</th></tr></thead><tbody>${rows.map(x=>`<tr class="click annualCategoryDetail" data-category="${esc(x.c)}"><td><b>${esc(x.c)}</b></td><td class="num">${money(x.v25)}</td><td class="num">${money(x.v26)}</td><td class="num">${money(x.d)}</td><td class="num">${x.p==null?'—':pct(x.p)}</td></tr>`).join('')}</tbody></table></div>`)}${annualAnalysis(y25,y26,t25,t26,rows)+analysisCategoryBox(base)}</div>`;
+ <div class="grid2">${card('Categorias: 2025 x 2026',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">2025</th><th class="num">2026</th><th class="num">Diferença</th><th class="num">Variação</th></tr></thead><tbody>${rows.map(x=>`<tr class="clickableRow js-detail-annual-category" data-category="${esc(x.c)}"><td><b>${esc(x.c)}</b></td><td class="num">${money(x.v25)}</td><td class="num">${money(x.v26)}</td><td class="num">${money(x.d)}</td><td class="num">${x.p==null?'—':pct(x.p)}</td></tr>`).join('')}</tbody></table></div>`)}${annualAnalysis(y25,y26,t25,t26,rows)+analysisCategoryBox(base)}</div>`;
 }
 function annualAnalysis(y25,y26,t25,t26,rows){
  const up=rows.filter(x=>x.d>0).sort((a,b)=>b.d-a.d),down=rows.filter(x=>x.d<0).sort((a,b)=>a.d-b.d);
@@ -342,9 +478,9 @@ function annualAnalysis(y25,y26,t25,t26,rows){
 }
 function renderGeneric(kind){
  const rows=selected(),total=sum(rows,x=>x.installmentValue);
- if(kind==='categories'){const g=categoryRows(rows);return allFilters({search:false})+`<div class="sectionIntro"><h2>Categorias</h2><p>Filtros próprios desta aba.</p></div>`+card('Ranking de categorias',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">Valor</th><th class="num">Lançamentos</th><th class="num">Fornecedores</th><th class="num">% total</th></tr></thead><tbody>${g.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${x.suppliers}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}
- if(kind==='suppliers'){const g=supplierRows(rows);return allFilters({search:false})+`<div class="sectionIntro"><h2>Fornecedores</h2><p>Filtros próprios desta aba.</p></div>`+card('Ranking de fornecedores',`<div class="tableWrap"><table><thead><tr><th>Fornecedor</th><th class="num">Valor</th><th class="num">Lançamentos</th><th class="num">Categorias</th><th class="num">% total</th></tr></thead><tbody>${g.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${x.categories}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}
- if(kind==='cards'){return allFilters({search:false})+`<div class="sectionIntro"><h2>Cartões</h2><p>Filtros próprios desta aba.</p></div>`+card('Lançamentos por cartão',table(rows))}
+ if(kind==='categories'){const g=categoryRows(rows);return allFilters({search:false})+`<div class="sectionIntro"><h2>Categorias</h2><p>Filtros próprios desta aba.</p></div>`+card('Ranking de categorias',`<div class="tableWrap"><table><thead><tr><th>Categoria</th><th class="num">Valor</th><th class="num">Lançamentos</th><th class="num">Fornecedores</th><th class="num">% total</th></tr></thead><tbody>${g.map(x=>`<tr class="clickableRow js-detail-category" data-category="${esc(x.name)}"><td><b>${esc(x.name)}</b> <span class="detailHint">ver gastos</span></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${x.suppliers}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}
+ if(kind==='suppliers'){const g=supplierRows(rows);return allFilters({search:false})+`<div class="sectionIntro"><h2>Fornecedores</h2><p>Filtros próprios desta aba.</p></div>`+card('Ranking de fornecedores',`<div class="tableWrap"><table><thead><tr><th>Fornecedor</th><th class="num">Valor</th><th class="num">Lançamentos</th><th class="num">Categorias</th><th class="num">% total</th></tr></thead><tbody>${g.map(x=>`<tr class="clickableRow js-detail-supplier" data-supplier="${esc(x.name)}"><td><b>${esc(x.name)}</b> <span class="detailHint">ver gastos</span></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${x.categories}</td><td class="num">${pct(total?x.total/total*100:0)}</td></tr>`).join('')}</tbody></table></div>`)}
+ if(kind==='cards'){const g=[...group(rows,r=>r.card)].map(([name,list])=>({name,total:sum(list,x=>x.installmentValue),count:list.length,categories:uniq(list.map(x=>x.category)).length})).sort((a,b)=>b.total-a.total);return allFilters({search:false})+`<div class="sectionIntro"><h2>Cartões</h2><p>Clique em um cartão para abrir todos os lançamentos e filtrar dentro do detalhamento.</p></div>`+card('Resumo por cartão',`<div class="tableWrap"><table><thead><tr><th>Cartão</th><th class="num">Valor</th><th class="num">Lançamentos</th><th class="num">Categorias</th></tr></thead><tbody>${g.map(x=>`<tr class="clickableRow js-detail-card" data-card="${esc(x.name)}"><td><b>${esc(x.name)}</b> <span class="detailHint">ver gastos</span></td><td class="num">${money(x.total)}</td><td class="num">${x.count}</td><td class="num">${x.categories}</td></tr>`).join('')}</tbody></table></div>`)+card('Todos os lançamentos',table(rows))}
  return allFilters({search:true})+`<div class="sectionIntro"><h2>Todos os lançamentos</h2><p>Base consolidada com filtros exclusivos desta aba.</p></div>`+card('Base completa',table(rows));
 }
 function render(){
@@ -358,11 +494,35 @@ function bindFilters(){
  $$('[data-multi] input').forEach(c=>c.onchange=()=>{const key=c.closest('[data-multi]').dataset.multi;s[key]=$$(`[data-multi="${key}"] input:checked`).map(x=>x.value);render()});
  const clear=$('#clearFilters');if(clear)clear.onclick=()=>{STATE[view]=DEFAULT();render()};
  const ac=$('#analysisCategorySelect');if(ac)ac.onchange=()=>{s.analysisCategory=ac.value?[ac.value]:[];render()};
- $$('.monthDetail').forEach(tr=>tr.onclick=()=>{const rows=selected().filter(r=>r.year==tr.dataset.year&&r.month==tr.dataset.month);openDetail(`${monthLong(tr.dataset.month)} / ${tr.dataset.year}`,rows,'Todos os gastos do mês selecionado')});
- $$('.categoryDetail').forEach(tr=>tr.onclick=()=>{const rows=selected().filter(r=>r.category===tr.dataset.category);openDetail(`Categoria: ${tr.dataset.category}`,rows,'Todos os lançamentos, fornecedores e valores da categoria')});
- $$('.annualCategoryDetail').forEach(tr=>tr.onclick=()=>{const rows=selected().filter(r=>r.category===tr.dataset.category&&(r.year===2025||r.year===2026));openDetail(`${tr.dataset.category} · 2025 x 2026`,rows,'Detalhamento completo dos dois anos')});
 }
 document.addEventListener('click',e=>{if(!e.target.closest('.multi'))$$('.multi').forEach(x=>x.classList.remove('open'));if(!e.target.closest('[data-detail-multi]'))$$('[data-detail-multi]').forEach(x=>x.classList.remove('open'))});
+
+document.addEventListener('click',e=>{
+ const row=e.target.closest('.js-detail-month,.js-detail-category,.js-detail-annual-category,.js-detail-supplier,.js-detail-card,.js-detail-single');
+ if(!row)return;
+ const baseRows=selected();
+ if(row.classList.contains('js-detail-month')){
+   const rows=baseRows.filter(r=>r.year==row.dataset.year&&r.month==row.dataset.month);
+   openDetail(`${monthLong(row.dataset.month)} / ${row.dataset.year}`,rows,'Todos os gastos do mês selecionado');
+ }else if(row.classList.contains('js-detail-annual-category')){
+   const rows=baseRows.filter(r=>r.category===row.dataset.category&&(r.year===2025||r.year===2026));
+   openDetail(`${row.dataset.category} · 2025 x 2026`,rows,'Comparação completa da categoria nos dois anos');
+ }else if(row.classList.contains('js-detail-category')){
+   const rows=baseRows.filter(r=>r.category===row.dataset.category);
+   openDetail(`Categoria: ${row.dataset.category}`,rows,'Todos os gastos e fornecedores da categoria');
+ }else if(row.classList.contains('js-detail-supplier')){
+   const rows=baseRows.filter(r=>r.supplier===row.dataset.supplier);
+   openDetail(`Fornecedor: ${row.dataset.supplier}`,rows,'Todos os gastos com o fornecedor');
+ }else if(row.classList.contains('js-detail-card')){
+   const rows=baseRows.filter(r=>r.card===row.dataset.card);
+   openDetail(`Cartão: ${row.dataset.card}`,rows,'Todos os lançamentos do cartão');
+ }else if(row.classList.contains('js-detail-single')){
+   const [date,supplier,category,card,value]=row.dataset.rowid.split('|');
+   const rows=baseRows.filter(r=>String(r.date)===date&&r.supplier===supplier&&r.category===category&&r.card===card&&String(r.installmentValue)===value);
+   openDetail('Detalhamento do lançamento',rows,'Lançamento selecionado');
+ }
+});
+
 function adminUI(){
  const on=!!session;
  $('#adminStatus').textContent=on?'Administrador conectado':'Visualização pública';
