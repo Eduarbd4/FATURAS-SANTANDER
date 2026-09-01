@@ -178,6 +178,7 @@ body{background:linear-gradient(180deg,#fafafa,#f3f3f2);color:#181818}
 @media(max-width:720px){.topbar h1:after{display:none}.side{display:none}.hero{padding:22px 20px}.hero h2{font-size:20px}.detailMonthComparison .kpis{grid-template-columns:1fr 1fr}}
 
 /* ===== CONFORTO VISUAL E ESPACAMENTO — TODAS AS ABAS ===== */
+/* BLOCO DESATIVADO: o pedido era ampliar a area util das tabelas, nao a tipografia.
 body{font-size:14px;line-height:1.5}
 .shell{grid-template-columns:280px minmax(0,1fr)}
 .side{padding:32px 22px}
@@ -321,6 +322,50 @@ th,td{padding:15px 16px}
   .cardHead small{text-align:left}
   table{font-size:12px}
   th,td{padding:14px}
+}
+*/
+
+/* ===== TABELAS SEM BARRA DE ROLAGEM HORIZONTAL ===== */
+.tableWrap{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+.tableWrap table,
+.comparisonTable table{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  table-layout:fixed;
+}
+.tableWrap th,
+.tableWrap td{
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  vertical-align:middle;
+}
+.tableWrap th.num,
+.tableWrap td.num{
+  white-space:normal;
+}
+.grid2,.grid2.equal{
+  min-width:0;
+}
+.grid2>.card,.grid2.equal>.card{
+  min-width:0;
+}
+#detailModal .dialog{
+  width:min(1320px,98vw)!important;
+}
+#detailBody .tableWrap{
+  overflow-x:hidden;
+}
+@media(max-width:900px){
+  .tableWrap table{font-size:9px}
+  .tableWrap th{font-size:7.5px}
+  .tableWrap th,.tableWrap td{padding:9px 7px}
 }
 </style>
 </head>
