@@ -401,13 +401,33 @@ th,td{padding:15px 16px}
   background:#fafaf9;
 }
 #detailFilters .filterPanel{
-  padding:13px 14px 14px;
+  padding:10px 12px 11px;
   margin-bottom:14px;
   border-radius:12px;
   background:#fff;
 }
+#detailFilters .detailFilterPanel>summary{
+  list-style:none;
+  cursor:pointer;
+  user-select:none;
+}
+#detailFilters .detailFilterPanel>summary::-webkit-details-marker{display:none}
+#detailFilters .detailFilterPanel>summary:after{
+  content:"Recolher filtros";
+  margin-left:auto;
+  padding:4px 8px;
+  border-radius:7px;
+  background:#f0f0ee;
+  color:#666;
+  font-size:8px;
+  font-weight:700;
+  text-transform:none;
+  letter-spacing:0;
+}
+#detailFilters .detailFilterPanel:not([open])>summary:after{content:"Mostrar filtros"}
+#detailFilters .detailFilterPanel:not([open]){padding-bottom:10px}
 #detailFilters .filterPanelHead{
-  margin-bottom:9px;
+  margin-bottom:8px;
 }
 #detailFilters .filterPanel .filters{
   grid-template-columns:repeat(5,minmax(0,1fr));
@@ -415,7 +435,10 @@ th,td{padding:15px 16px}
 }
 #detailFilters .multi>button,
 #detailFilters .clear{
-  min-height:38px;
+  min-height:33px;
+  height:33px;
+  padding:7px 9px;
+  font-size:8.5px;
 }
 #detailBody{
   flex:1 1 auto;
@@ -430,6 +453,16 @@ th,td{padding:15px 16px}
   margin:0 0 14px;
   background:#fff;
 }
+.detailSectionTitle{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px;
+  margin:5px 0 10px;
+  padding:0 2px;
+}
+.detailSectionTitle h3{margin:0;font-size:14px;font-family:Inter,Arial,sans-serif}
+.detailSectionTitle span{font-size:9px;color:#777;text-align:right}
 #detailBody>.kpis{
   padding:0 0 4px!important;
   gap:10px;
@@ -506,6 +539,34 @@ th,td{padding:15px 16px}
 .monthlyCompareTable tbody tr td:first-child{font-weight:800;color:#181818}
 .monthlyCompareTable .comparisonUp{background:#fff7f7}
 .monthlyCompareTable .comparisonDown{background:#f3faf7}
+.fixedMonthCompare{margin:0 0 18px;padding:18px 18px 2px;background:#fff}
+.fixedMonthCompare>.sectionIntro{margin-bottom:14px}
+.fixedMonthCompare>.kpis{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.fixedMonthCompare>.kpis .kpi{min-height:105px;padding:15px 16px}
+.fixedMonthCompare>.kpis .kpi strong{font-size:18px;margin:11px 0 6px}
+.fixedMonthCompare .detailBreakdownMain{margin-bottom:14px}
+.fixedMonthCompare .detailBreakdownMain .card{margin-bottom:0}
+.fixedMonthCompare .comparisonTable{max-height:360px}
+.fixedMonthCompare .comparisonTable tr.js-detail-compare-focus{cursor:pointer}
+.fixedMonthCompare .comparisonTable tr.js-detail-compare-focus:hover td{background:#ededeb!important}
+@media(max-width:900px){.fixedMonthCompare>.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ===== MENU LATERAL RECOLHIVEL ===== */
+.shell{transition:grid-template-columns .24s ease}
+.side{transition:transform .24s ease,opacity .18s ease;will-change:transform}
+.shell.sideCollapsed{grid-template-columns:0 minmax(0,1fr)}
+.shell.sideCollapsed .side{transform:translateX(-100%);opacity:0;pointer-events:none}
+.shell.sideCollapsed .content{max-width:1920px}
+.sidebarToggle{white-space:nowrap;font-weight:700}
+.sidebarToggle[data-collapsed="true"]{background:#171717;color:#fff;border-color:#171717}
+@media(max-width:1100px) and (min-width:721px){
+  .shell:not(.sideCollapsed){grid-template-columns:220px minmax(0,1fr)}
+  .shell:not(.sideCollapsed) .brand div:last-child,
+  .shell:not(.sideCollapsed) .nav .text,
+  .shell:not(.sideCollapsed) .sideFoot{display:block}
+  .shell:not(.sideCollapsed) .nav button{text-align:left}
+}
+@media(max-width:720px){.sidebarToggle{display:none}}
 @media(max-width:1180px){
   #detailFilters .filterPanel .filters{grid-template-columns:repeat(3,minmax(0,1fr))}
   #detailModal .dialog{width:99vw!important}
@@ -517,6 +578,8 @@ th,td{padding:15px 16px}
   #detailFilters{padding:10px 10px 0!important}
   #detailFilters .filterPanel .filters{grid-template-columns:repeat(2,minmax(0,1fr))}
   #detailBody{padding:2px 10px 14px}
+  .detailSectionTitle{align-items:flex-start;flex-direction:column}
+  .detailSectionTitle span{text-align:left}
   #detailBody>.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   #detailBody>.detailDataTable th,#detailBody>.detailDataTable td{padding:8px 5px;font-size:8px}
 }
@@ -545,6 +608,7 @@ th,td{padding:15px 16px}
 </aside>
 <main class="main">
 <header class="topbar"><div><h1 id="pageTitle">Visão Executiva</h1><p>DANE-SE · Controle de faturas · Comparação entre competências em todas as abas</p></div><div class="rightbar">
+<button class="control sidebarToggle" id="sidebarToggle" type="button" aria-expanded="true" data-collapsed="false">Recolher menu</button>
 <button class="control" onclick="window.print()">Imprimir / PDF</button>
 <span class="adminStatus" id="adminStatus">Visualização pública</span>
 <button class="control" id="loginBtn">Área administrativa</button>
@@ -661,7 +725,7 @@ function supplierRows(rows){
 }
 
 
-let DETAIL={allRows:[],title:'',subtitle:'',filters:{years:[],months:[],comparisonMonths:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]}};
+let DETAIL={allRows:[],title:'',subtitle:'',mode:'',compareMonth:null,filters:{years:[],months:[],comparisonMonths:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]}};
 
 function detailSelected(){
  const f=DETAIL.filters;
@@ -684,7 +748,7 @@ function detailMulti(key,label,items){
 function detailTable(rows){
  const total=sum(rows,x=>x.installmentValue);
  if(!rows.length)return `<div class="empty"><b>Nenhum lançamento encontrado</b>Altere ou limpe os filtros do detalhamento.</div>`;
- return `<div class="kpis" style="padding:0 16px 4px">
+ return `<div class="detailSectionTitle"><h3>Lançamentos que formam os valores</h3><span>Ano, mês, fornecedor, categoria, cartão e valor de cada registro</span></div><div class="kpis" style="padding:0 16px 4px">
  ${kpi('Total filtrado',money(total),rows.length+' lançamentos')}
  ${kpi('Fornecedores',uniq(rows.map(x=>x.supplier)).length,'No recorte','cyan')}
  ${kpi('Categorias',uniq(rows.map(x=>x.category)).length,'No recorte','purple')}
@@ -712,30 +776,46 @@ function detailMonthComparison(){
  const rowsA=base.filter(r=>r.year===ay&&r.month===am),rowsB=base.filter(r=>r.year===by&&r.month===bm),totalA=sum(rowsA,x=>x.installmentValue),totalB=sum(rowsB,x=>x.installmentValue),diff=totalB-totalA,variation=totalA?diff/totalA*100:null;
  const labelA=`${monthLong(am)} / ${ay}`,labelB=`${monthLong(bm)} / ${by}`;
  const breakdown=(title,key)=>{const names=uniq([...rowsA.map(key),...rowsB.map(key)]),items=names.map(name=>{const va=sum(rowsA.filter(r=>key(r)===name),x=>x.installmentValue),vb=sum(rowsB.filter(r=>key(r)===name),x=>x.installmentValue),d=vb-va;return{name,va,vb,d,p:va?d/va*100:null}}).sort((x,y)=>Math.max(y.va,y.vb)-Math.max(x.va,x.vb));return card(title,`<div class="tableWrap comparisonTable"><table><thead><tr><th>Descrição</th><th class="num">${esc(labelA)}</th><th class="num">${esc(labelB)}</th><th class="num">Diferença</th><th class="num">Variação</th></tr></thead><tbody>${items.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td class="num">${money(x.va)}</td><td class="num">${money(x.vb)}</td><td class="num ${x.d>0?'comparisonUp':x.d<0?'comparisonDown':''}">${x.d>0?'+':''}${money(x.d)}</td><td class="num">${x.p==null?'—':`${x.p>0?'+':''}${pct(x.p)}`}</td></tr>`).join('')}</tbody></table></div>`);};
- return `<section class="monthComparison detailMonthComparison"><div class="sectionIntro"><h2>Comparação da categoria</h2><p>${esc(labelA)} versus ${esc(labelB)} · somente dentro deste detalhamento.</p></div><div class="kpis">${kpi(labelA,money(totalA),rowsA.length+' lançamentos')}${kpi(labelB,money(totalB),rowsB.length+' lançamentos','cyan')}${kpi('Diferença',`${diff>0?'+':''}${money(diff)}`,diff>0?'Aumento':'Redução',diff>0?'red':'green')}${kpi('Variação',variation==null?'—':`${variation>0?'+':''}${pct(variation)}`,'Sobre a primeira competência','amber')}</div><div class="grid2 equal">${breakdown('Comparação por fornecedor',r=>r.supplier)}${breakdown('Comparação por cartão',r=>r.card)}</div></section>`;
+ return `<section class="monthComparison detailMonthComparison"><div class="sectionIntro"><h2>Comparação do detalhamento</h2><p>${esc(labelA)} versus ${esc(labelB)} · somente dentro deste quadro.</p></div><div class="kpis">${kpi(labelA,money(totalA),rowsA.length+' lançamentos')}${kpi(labelB,money(totalB),rowsB.length+' lançamentos','cyan')}${kpi('Diferença',`${diff>0?'+':''}${money(diff)}`,diff>0?'Aumento':'Redução',diff>0?'red':'green')}${kpi('Variação',variation==null?'—':`${variation>0?'+':''}${pct(variation)}`,'Sobre a primeira competência','amber')}</div>${breakdown('Comparação por categoria',r=>r.category)}<div class="grid2 equal">${breakdown('Comparação por fornecedor',r=>r.supplier)}${breakdown('Comparação por cartão',r=>r.card)}</div></section>`;
+}
+function fixedMonthYearComparison(rows){
+ const month=Number(DETAIL.compareMonth)||Number(rows[0]?.month)||0;
+ const rows25=rows.filter(r=>r.year===2025),rows26=rows.filter(r=>r.year===2026);
+ const total25=sum(rows25,x=>x.installmentValue),total26=sum(rows26,x=>x.installmentValue),diff=total26-total25,variation=total25?diff/total25*100:null;
+ const breakdown=(title,key,filterKey)=>{
+   const names=uniq([...rows25.map(key),...rows26.map(key)]);
+   const items=names.map(name=>{const v25=sum(rows25.filter(r=>key(r)===name),x=>x.installmentValue),v26=sum(rows26.filter(r=>key(r)===name),x=>x.installmentValue),d=v26-v25;return{name,v25,v26,d,p:v25?d/v25*100:null}}).sort((a,b)=>Math.max(b.v25,b.v26)-Math.max(a.v25,a.v26));
+   const body=items.length?items.map(x=>`<tr class="js-detail-compare-focus" data-filter-key="${filterKey}" data-filter-value="${esc(x.name)}"><td><b>${esc(x.name)}</b> <span class="detailHint">filtrar lançamentos</span></td><td class="num">${money(x.v25)}</td><td class="num">${money(x.v26)}</td><td class="num ${x.d>0?'comparisonUp':x.d<0?'comparisonDown':''}">${x.d>0?'+':''}${money(x.d)}</td><td class="num">${x.p==null?'—':`${x.p>0?'+':''}${pct(x.p)}`}</td></tr>`).join(''):`<tr><td colspan="5">Nenhuma informação encontrada neste recorte.</td></tr>`;
+   return card(title,`<div class="tableWrap comparisonTable"><table><thead><tr><th>${title.replace('Comparativo por ','')}</th><th class="num">2025</th><th class="num">2026</th><th class="num">Diferença</th><th class="num">Variação</th></tr></thead><tbody>${body}</tbody></table></div>`,'Clique em uma linha para filtrar os lançamentos');
+ };
+ return `<section class="monthComparison fixedMonthCompare"><div class="sectionIntro"><h2>${monthLong(month)} · comparação 2025 × 2026</h2><p>Valores somente de ${monthLong(month)} em cada ano, respeitando os filtros aplicados neste quadro.</p></div>
+ <div class="kpis">${kpi(`${monthShort(month)} / 2025`,money(total25),rows25.length+' lançamentos')}${kpi(`${monthShort(month)} / 2026`,money(total26),rows26.length+' lançamentos','cyan')}${kpi('Diferença',`${diff>0?'+':''}${money(diff)}`,diff>0?'Aumento em 2026':'Redução em 2026',diff>0?'red':'green')}${kpi('Variação',variation==null?'—':`${variation>0?'+':''}${pct(variation)}`,'2026 em relação a 2025','amber')}${kpi('Lançamentos',`${rows25.length} × ${rows26.length}`,'2025 × 2026','purple')}</div>
+ <div class="detailBreakdownMain">${breakdown('Comparativo por categoria',r=>r.category,'categories')}</div>
+ <div class="grid2 equal">${breakdown('Comparativo por fornecedor',r=>r.supplier,'suppliers')}${breakdown('Comparativo por cartão',r=>r.card,'cards')}</div></section>`;
 }
 function renderDetail(){
- const rows=detailSelected(), source=DETAIL.allRows;
+ const rows=detailSelected(), source=DETAIL.allRows, fixedCompare=DETAIL.mode==='monthlyCompare';
  const mk=(key,label,vals,formatter=x=>x)=>detailMulti(key,label,uniq(vals).map(v=>({v:String(v),t:formatter(v)})));
- $('#detailFilters').innerHTML=`<section class="filterPanel"><div class="filterPanelHead"><b>Filtros do detalhamento</b><span>Esses filtros não alteram a aba principal</span></div><div class="filters">
- ${mk('years','Ano',source.map(x=>x.year))}
- ${mk('months','Mês',source.map(x=>x.month),monthLong)}
- ${detailMulti('comparisonMonths','Comparar competências',uniq(source.filter(x=>x.year&&x.month).map(x=>`${x.year}-${String(x.month).padStart(2,'0')}`)).map(v=>{const [y,m]=v.split('-');return{v,t:`${monthLong(Number(m))} / ${y}`}}))}
+ $('#detailFilters').innerHTML=`<details class="filterPanel detailFilterPanel" open><summary class="filterPanelHead"><b>Filtros do detalhamento</b><span>Esses filtros não alteram a aba principal</span></summary><div class="filters">
+ ${fixedCompare?'':mk('years','Ano',source.map(x=>x.year))}
+ ${fixedCompare?'':mk('months','Mês',source.map(x=>x.month),monthLong)}
+ ${fixedCompare?'':detailMulti('comparisonMonths','Comparar competências',uniq(source.filter(x=>x.year&&x.month).map(x=>`${x.year}-${String(x.month).padStart(2,'0')}`)).map(v=>{const [y,m]=v.split('-');return{v,t:`${monthLong(Number(m))} / ${y}`}}))}
  ${mk('categories','Categoria',source.map(x=>x.category))}
  ${mk('suppliers','Fornecedor',source.map(x=>x.supplier))}
  ${mk('cards','Número do cartão',source.map(x=>x.card))}
  ${mk('parcelStatus','Parcelado / não',source.map(x=>String(x.installment).toLowerCase()),x=>x==='sim'?'Parcelado':(x==='nao'||x==='não')?'Não parcelado':x)}
  ${mk('installments','Qtd. parcelas',source.map(x=>x.installments),x=>x?`${x} parcela${Number(x)>1?'s':''}`:'Não informado')}
  <button class="clear" id="detailClear">Limpar filtros</button>
- </div></section>`;
- $('#detailBody').innerHTML=detailMonthComparison()+detailTable(rows);
+ </div></details>`;
+ $('#detailBody').innerHTML=(fixedCompare?fixedMonthYearComparison(rows):detailMonthComparison())+detailTable(rows);
  $('#detailSub').textContent=`${rows.length} lançamentos · ${money(sum(rows,x=>x.installmentValue))}`;
  $$('[data-detail-multi]>button').forEach(b=>b.onclick=e=>{e.stopPropagation();const box=b.parentElement;$$('[data-detail-multi]').filter(x=>x!==box).forEach(x=>x.classList.remove('open'));box.classList.toggle('open')});
  $$('[data-detail-multi] input').forEach(c=>c.onchange=()=>{const key=c.closest('[data-detail-multi]').dataset.detailMulti;DETAIL.filters[key]=$$(`[data-detail-multi="${key}"] input:checked`).map(x=>x.value);renderDetail()});
+ $$('.js-detail-compare-focus').forEach(r=>r.onclick=()=>{const key=r.dataset.filterKey,value=r.dataset.filterValue;if(!key||!value)return;DETAIL.filters[key]=[value];renderDetail()});
  const clear=$('#detailClear');if(clear)clear.onclick=()=>{DETAIL.filters={years:[],months:[],comparisonMonths:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]};renderDetail()};
 }
-function openDetail(title,rows,subtitle=''){
- DETAIL={allRows:[...rows],title,subtitle,filters:{years:[],months:[],comparisonMonths:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]}};
+function openDetail(title,rows,subtitle='',context={}){
+ DETAIL={allRows:[...rows],title,subtitle,mode:context.mode||'',compareMonth:context.compareMonth||null,filters:{years:[],months:[],comparisonMonths:[],categories:[],suppliers:[],cards:[],parcelStatus:[],installments:[]}};
  $('#detailTitle').textContent=title;
  $('#detailSub').textContent=subtitle||`${rows.length} lançamentos`;
  $('#detailModal').classList.add('open');
@@ -929,7 +1009,7 @@ document.addEventListener('click',e=>{
  const baseRows=selected();
  if(row.classList.contains('js-detail-month-compare')){
    const rows=baseRows.filter(r=>(r.year===2025||r.year===2026)&&r.month==row.dataset.month);
-   openDetail(`${monthLong(row.dataset.month)} · 2025 × 2026`,rows,'Comparação completa do mesmo mês nos dois anos');
+   openDetail(`${monthLong(row.dataset.month)} · 2025 × 2026`,rows,'Categorias, fornecedores, cartões e lançamentos do mês nos dois anos',{mode:'monthlyCompare',compareMonth:Number(row.dataset.month)});
  }else if(row.classList.contains('js-detail-month')){
    const rows=baseRows.filter(r=>r.year==row.dataset.year&&r.month==row.dataset.month);
    openDetail(`${monthLong(row.dataset.month)} / ${row.dataset.year}`,rows,'Todos os gastos do mês selecionado');
@@ -972,6 +1052,16 @@ $('#loginForm').onsubmit=async e=>{
 };
 $('#logoutBtn').onclick=async()=>{await db.auth.signOut();session=null;adminUI()};
 
+const sidebarToggle=$('#sidebarToggle'),shell=$('.shell');
+function setSidebarCollapsed(collapsed){
+ shell.classList.toggle('sideCollapsed',collapsed);
+ sidebarToggle.dataset.collapsed=String(collapsed);
+ sidebarToggle.setAttribute('aria-expanded',String(!collapsed));
+ sidebarToggle.textContent=collapsed?'Mostrar menu':'Recolher menu';
+ localStorage.setItem('controle_faturas_menu_recolhido',collapsed?'1':'0');
+}
+sidebarToggle.onclick=()=>setSidebarCollapsed(!shell.classList.contains('sideCollapsed'));
+setSidebarCollapsed(localStorage.getItem('controle_faturas_menu_recolhido')==='1');
 $('#nav').onclick=e=>{const b=e.target.closest('[data-view]');if(!b)return;view=b.dataset.view;$$('#nav button').forEach(x=>x.classList.toggle('active',x===b));$('#pageTitle').textContent=b.innerText.trim();render()};
 function normDate(v){if(!v)return'';if(v instanceof Date)return v.toISOString().slice(0,10);if(typeof v==='number')return new Date(Math.round((v-25569)*86400000)).toISOString().slice(0,10);return String(v)}
 function pick(o,names){for(const n of names){const k=Object.keys(o).find(k=>String(k).trim().toLowerCase()===n.toLowerCase());if(k)return o[k]}return''}
